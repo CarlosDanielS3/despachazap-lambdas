@@ -1,0 +1,29 @@
+service: plate-retriever
+
+provider:
+  name: aws
+  runtime: nodejs22.x
+  environment:
+    MONGO_URL: ${env:MONGO_URL}
+    API_PLACAS_TOKEN: ${env:API_PLACAS_TOKEN}
+  vpc:
+    securityGroupIds:
+      - sg-067798947b0dc7004
+    subnetIds:
+      - subnet-06926c6ca74760317
+  stage: production
+
+functions:
+  retrievePlate:
+    handler: index.handler
+    events:
+      - http:
+          path: retrieve-plate
+          method: post
+
+plugins:
+  - serverless-offline
+
+custom:
+  serverless-offline:
+    httpPort: 3005
