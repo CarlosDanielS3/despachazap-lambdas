@@ -6,7 +6,17 @@ import mongoose from "mongoose";
 
 export const handler = async (event, context) => {
   try {
-    await mongoose.connect(process.env.MONGO_URL);
+    configDotenv();
+    try {
+      await mongoose.connect(process.env.MONGO_URL);
+    } catch (error) {
+      console.error("MongoDB connection error:", error);
+      return {
+        statusCode: 500,
+        body: JSON.stringify({ error: "Database connection failed" }),
+      };
+    }
+
     const requestPayload = JSON.parse(event.body);
 
     const { data } = await axios.get(

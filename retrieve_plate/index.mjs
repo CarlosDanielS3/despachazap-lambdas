@@ -1,9 +1,19 @@
 import axios from "axios";
+import { configDotenv } from "dotenv";
 
 import mongoose from "mongoose";
 
 export const handler = async (event, context) => {
-  await mongoose.connect(process.env.MONGO_URL);
+  configDotenv();
+  try {
+    await mongoose.connect(process.env.MONGO_URL);
+  } catch (error) {
+    console.error("MongoDB connection error:", error);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: "Database connection failed" }),
+    };
+  }
 
   const { plate } = JSON.parse(event.body);
 
