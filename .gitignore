@@ -48,6 +48,19 @@ web_modules/
 # TypeScript cache
 *.tsbuildinfo
 
+# Terraform
+.terraform/
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.*
+terraform.tfvars
+*.tfplan
+
+# Lambda build artifacts
+infra/archives/
+**/dist/
+layers/shared/dist/
+
 # Optional npm cache directory
 .npm
 

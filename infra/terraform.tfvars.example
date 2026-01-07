@@ -1,0 +1,32 @@
+# AWS Configuration
+aws_region  = "us-east-1"
+environment = "production"
+project_name = "despachazap"
+
+# Database Configuration
+mongo_url = "mongodb://your-mongodb-connection-string"
+api_placas_token = "your-api-placas-token"
+botconversa_token = "your-botconversa-api-token"
+
+# Woovi Configuration
+woovi_api_url = "https://api.woovi.com"
+woovi_api_key = "your-woovi-api-key"
+woovi_api_key_website = "your-woovi-api-key-for-website"
+plate_research_value = "990"
+
+# Security Settings
+enable_api_key = true  # Enable API key authentication (AWS auto-generates)
+
+# Cost Optimization Settings
+# Uncomment and adjust these for maximum cost savings
+# log_retention_days = 3                    # Default: 7 (lower = cheaper)
+# sqs_message_retention_seconds = 86400     # Default: 345600 (1 day vs 4 days)
+# api_throttling_burst_limit = 1000         # Default: 5000
+# api_throttling_rate_limit = 500           # Default: 10000
+
+# Cost Monitoring Configuration
+cost_alert_email              = "your-email@example.com"
+monthly_budget_limit          = "20"    # USD per month (ultra low)
+daily_budget_limit            = "2"     # USD per day (ultra low)
+lambda_invocation_threshold   = 1000    # Invocations per hour (ultra low)
+api_request_threshold         = 500     # Requests per hour (ultra low)

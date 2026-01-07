@@ -1,0 +1,29 @@
+{
+  "name": "despachazap-lambdas",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "npm run build:plate-validator && npm run build:retrieve-plate && npm run build:plate-preview && npm run build:payment-status-check && npm run build:payment-status-create && npm run build:woovi-pix-invoice && npm run build:woovi-pix-invoice-website && npm run build:woovi-pix-paid-webhook",
+    "build:plate-validator": "node -e \"import('esbuild').then(e => import('./esbuild-lambda-layer-plugin.mjs').then(p => e.build({ entryPoints: ['./plate_validator/index.ts'], bundle: true, sourcemap: true, minify: true, platform: 'node', target: 'node22', outdir: 'plate_validator/dist', plugins: [p.lambdaLayerPlugin] })))\"",
+    "build:retrieve-plate": "node -e \"import('esbuild').then(e => import('./esbuild-lambda-layer-plugin.mjs').then(p => e.build({ entryPoints: ['./retrieve_plate/index.ts'], bundle: true, sourcemap: true, minify: true, platform: 'node', target: 'node22', outdir: 'retrieve_plate/dist', external: ['mongoose'], plugins: [p.lambdaLayerPlugin] })))\"",
+    "build:plate-preview": "node -e \"import('esbuild').then(e => import('./esbuild-lambda-layer-plugin.mjs').then(p => e.build({ entryPoints: ['./plate_preview/index.ts'], bundle: true, sourcemap: true, minify: true, platform: 'node', target: 'node22', outdir: 'plate_preview/dist', external: ['mongoose'], plugins: [p.lambdaLayerPlugin] })))\"",
+    "build:payment-status-check": "node -e \"import('esbuild').then(e => import('./esbuild-lambda-layer-plugin.mjs').then(p => e.build({ entryPoints: ['./payment_status_check/index.ts'], bundle: true, sourcemap: true, minify: true, platform: 'node', target: 'node22', outdir: 'payment_status_check/dist', external: ['mongoose'], plugins: [p.lambdaLayerPlugin] })))\"",
+    "build:payment-status-create": "node -e \"import('esbuild').then(e => import('./esbuild-lambda-layer-plugin.mjs').then(p => e.build({ entryPoints: ['./payment_status_create/index.ts'], bundle: true, sourcemap: true, minify: true, platform: 'node', target: 'node22', outdir: 'payment_status_create/dist', external: ['mongoose'], plugins: [p.lambdaLayerPlugin] })))\" && cp -r payment_status_create/sources payment_status_create/dist/sources",
+    "build:woovi-pix-invoice": "node -e \"import('esbuild').then(e => import('./esbuild-lambda-layer-plugin.mjs').then(p => e.build({ entryPoints: ['./woovi_pix_invoice/index.ts'], bundle: true, sourcemap: true, minify: true, platform: 'node', target: 'node22', outdir: 'woovi_pix_invoice/dist', plugins: [p.lambdaLayerPlugin] })))\"",
+    "build:woovi-pix-invoice-website": "node -e \"import('esbuild').then(e => import('./esbuild-lambda-layer-plugin.mjs').then(p => e.build({ entryPoints: ['./woovi_pix_invoice_website/index.ts'], bundle: true, sourcemap: true, minify: true, platform: 'node', target: 'node22', outdir: 'woovi_pix_invoice_website/dist', plugins: [p.lambdaLayerPlugin] })))\"",
+    "build:woovi-pix-paid-webhook": "node -e \"import('esbuild').then(e => import('./esbuild-lambda-layer-plugin.mjs').then(p => e.build({ entryPoints: ['./woovi_pix_paid_webhook/index.ts'], bundle: true, sourcemap: true, minify: true, platform: 'node', target: 'node22', outdir: 'woovi_pix_paid_webhook/dist', external: ['mongoose'], plugins: [p.lambdaLayerPlugin] })))\""
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.738.0",
+    "@types/aws-lambda": "^8.10.145",
+    "axios": "^1.7.9",
+    "jspdf": "^2.5.2"
+  },
+  "devDependencies": {
+    "@types/node": "^25.0.3",
+    "esbuild": "^0.24.2",
+    "mongoose": "^9.1.1",
+    "typescript": "^5.7.3"
+  }
+}
