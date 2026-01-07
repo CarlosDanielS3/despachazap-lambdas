@@ -456,7 +456,7 @@ Contributions are welcome! Please follow these guidelines:
 
 ## 🔗 Related Projects
 
-- [despacha-zap-frontend](../despacha-zap-frontend) - Frontend React application
+- [despacha-zap-frontend](https://github.com/CarlosDanielS3/despacha-zap-frontend) - Frontend React application
 
 ## 📞 Support
 
