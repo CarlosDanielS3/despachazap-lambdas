@@ -456,7 +456,7 @@ Contributions are welcome! Please follow these guidelines:
 
 ## 🔗 Related Projects
 
-- [despacha-zap-finder](../despacha-zap-finder) - Frontend React application
+- [despacha-zap-frontend](../despacha-zap-frontend) - Frontend React application
 
 ## 📞 Support
 
