@@ -25,44 +25,45 @@ MongoDB / Woovi API / S3
 
 ### Components
 
-| Component | Count | Purpose |
-|-----------|-------|---------|
-| **API Gateway REST API** | 1 | Exposes 4 POST endpoints with AWS-managed API keys |
-| **Lambda Functions** | 4 | All TypeScript with shared layer |
-| **Lambda Layer** | 1 | Shared utilities (mongoose, validators, types, response helpers) |
-| **SQS Queue** | 1 | Async webhook processing with DLQ |
-| **S3 Bucket** | 1 | PDF storage with 30-day lifecycle |
-| **CloudWatch Log Groups** | 5 | 7-day retention for all services |
-| **IAM Roles** | 4 | Least-privilege access control |
+| Component                 | Count | Purpose                                                          |
+| ------------------------- | ----- | ---------------------------------------------------------------- |
+| **API Gateway REST API**  | 1     | Exposes 4 POST endpoints with AWS-managed API keys               |
+| **Lambda Functions**      | 4     | All TypeScript with shared layer                                 |
+| **Lambda Layer**          | 1     | Shared utilities (mongoose, validators, types, response helpers) |
+| **SQS Queue**             | 1     | Async webhook processing with DLQ                                |
+| **S3 Bucket**             | 1     | PDF storage with 30-day lifecycle                                |
+| **CloudWatch Log Groups** | 5     | 7-day retention for all services                                 |
+| **IAM Roles**             | 4     | Least-privilege access control                                   |
 
 ### Lambda Functions (TypeScript)
 
-| Function | Memory | Timeout | Purpose | Key Features |
-|----------|--------|---------|---------|-------------|
-| **plate-validator** | 256MB | 30s | Validate Brazilian plate format | Regex validation, shared validators |
-| **retrieve-plate** | 512MB | 60s | Fetch plate data | MongoDB caching, external API fallback |
-| **plate-preview** | 256MB | 30s | Get free vehicle preview | Limited data for marketing |
-| **payment-status-check** | 256MB | 30s | Verify payment status | Woovi integration |
-| **payment-status-create** | 256MB | 30s | Create payment record | MongoDB persistence |
-| **woovi-pix-invoice** | 256MB | 30s | Generate PIX invoice | Woovi API integration |
-| **woovi-pix-invoice-website** | 256MB | 30s | Generate invoice (website) | Frontend integration |
-| **woovi-pix-paid-webhook** | 1024MB | 120s | Process paid webhooks | SQS async, PDF generation, S3 upload |
+| Function                      | Memory | Timeout | Purpose                         | Key Features                           |
+| ----------------------------- | ------ | ------- | ------------------------------- | -------------------------------------- |
+| **plate-validator**           | 256MB  | 30s     | Validate Brazilian plate format | Regex validation, shared validators    |
+| **retrieve-plate**            | 512MB  | 60s     | Fetch plate data                | MongoDB caching, external API fallback |
+| **plate-preview**             | 256MB  | 30s     | Get free vehicle preview        | Limited data for marketing             |
+| **payment-status-check**      | 256MB  | 30s     | Verify payment status           | Woovi integration                      |
+| **payment-status-create**     | 256MB  | 30s     | Create payment record           | MongoDB persistence                    |
+| **woovi-pix-invoice**         | 256MB  | 30s     | Generate PIX invoice            | Woovi API integration                  |
+| **woovi-pix-invoice-website** | 256MB  | 30s     | Generate invoice (website)      | Frontend integration                   |
+| **woovi-pix-paid-webhook**    | 1024MB | 120s    | Process paid webhooks           | SQS async, PDF generation, S3 upload   |
 
 ### API Endpoints
 
-| Endpoint | Method | Auth | Purpose | Response Time |
-|----------|--------|------|---------|---------------|
-| `/plate-validator` | POST | API Key | Validate plate format | < 100ms |
-| `/plate-preview` | POST | API Key | Get free preview data | < 500ms |
-| `/retrieve-plate-full` | POST | API Key | Get complete vehicle data | < 2s |
-| `/woovi-pix-invoice` | POST | API Key | Create PIX payment | < 500ms |
-| `/woovi-pix-invoice-website` | POST | API Key | Create PIX (website) | < 500ms |
-| `/check-payment-status` | GET | API Key | Verify payment status | < 300ms |
-| `/payment-webhook` | POST | Webhook | Process paid invoice (async) | < 30s |
+| Endpoint                     | Method | Auth    | Purpose                      | Response Time |
+| ---------------------------- | ------ | ------- | ---------------------------- | ------------- |
+| `/plate-validator`           | POST   | API Key | Validate plate format        | < 100ms       |
+| `/plate-preview`             | POST   | API Key | Get free preview data        | < 500ms       |
+| `/retrieve-plate-full`       | POST   | API Key | Get complete vehicle data    | < 2s          |
+| `/woovi-pix-invoice`         | POST   | API Key | Create PIX payment           | < 500ms       |
+| `/woovi-pix-invoice-website` | POST   | API Key | Create PIX (website)         | < 500ms       |
+| `/check-payment-status`      | GET    | API Key | Verify payment status        | < 300ms       |
+| `/payment-webhook`           | POST   | Webhook | Process paid invoice (async) | < 30s         |
 
 ## 💰 Monthly Costs
 
 Cost-optimized for self-hosting with the following settings:
+
 - 7-day CloudWatch log retention
 - 4-day SQS message retention
 - HTTP API (70% cheaper than REST API)
@@ -70,13 +71,14 @@ Cost-optimized for self-hosting with the following settings:
 
 ### Cost Estimates
 
-| Monthly Requests | API Gateway | SQS | Lambda | CloudWatch | **Total** |
-|-----------------|-------------|-----|--------|------------|-----------|
-| **10,000** | $0.01 | Free | Free + $0.10 | $0.30 | **~$0.41** |
-| **100,000** | $0.10 | $0.04 | $0.02 + $1.50 | $2.80 | **~$4.46** |
-| **1,000,000** | $1.00 | $0.40 | $0.20 + $15.00 | $26.50 | **~$43.10** |
+| Monthly Requests | API Gateway | SQS   | Lambda         | CloudWatch | **Total**   |
+| ---------------- | ----------- | ----- | -------------- | ---------- | ----------- |
+| **10,000**       | $0.01       | Free  | Free + $0.10   | $0.30      | **~$0.41**  |
+| **100,000**      | $0.10       | $0.04 | $0.02 + $1.50  | $2.80      | **~$4.46**  |
+| **1,000,000**    | $1.00       | $0.40 | $0.20 + $15.00 | $26.50     | **~$43.10** |
 
 **AWS Free Tier Benefits** (first 12 months):
+
 - Lambda: 1M requests + 400k GB-seconds/month
 - SQS: 1M requests/month
 - CloudWatch: 5GB ingestion + 5GB storage
@@ -141,7 +143,8 @@ vim terraform.tfvars
 ```
 
 Required configuration:
-```hcl
+
+````hcl
 aws_region  = "us-east-1"
 mongo_url   = "mongodb+srv://..."
 api_placas_token = "your-api-placas-token"
@@ -167,7 +170,7 @@ terraform plan
 
 # Deploy to AWS
 terraform apply
-```
+````
 
 ### 6. Get API URLs and Keys
 
@@ -201,7 +204,10 @@ curl -X POST "$API_URL/woovi-pix-invoice" \
   -d '{"plate":"ABC1D23","name":"John Doe","phone":"5511999999999"}'
 ```
 
-**Rebuild all lambdas
+### Rebuild and Deploy
+
+```bash
+# Rebuild all lambdas
 cd lambdas && npm run build
 
 # Or rebuild specific lambda
@@ -213,51 +219,68 @@ npm run build:woovi-pix-paid-webhook
 # Deploy updates
 cd ../infra && terraform apply
 ```
-� Project Structure
+
+## 📁 Project Structure
 
 ```
 despachazap-lambdas/
-├── infra/                          # Terraform infrastructure
-│   ├── main.tf                     # Main resources (API Gateway, Lambda, Layer)
-│   ├── variables.tf                # Input variables
-│   ├── outputs.tf                  # Output values
-│   ├── s3.tf                       # S3 bucket for PDFs
-│   ├── cloudwatch_alarms.tf        # Monitoring alarms
-│   ├── terraform.tfvars            # Your configuration (gitignored)
-│   ├── terraform.tfvars.example    # Example configuration
-│   ├── build-all.sh                # Build all lambdas + layer
-│   └── archives/                   # Built lambda ZIPs (gitignored)
-├── lambdas/                        # Lambda functions
-│   ├── package.json                # Shared dependencies for all lambdas
-│   ├── tsconfig.json               # Shared TypeScript config
-│   ├── esbuild-lambda-layer-plugin.mjs  # Build plugin for layer imports
+├── infra/                              # Terraform infrastructure
+│   ├── main.tf                         # Main resources (API Gateway, Lambda, Layer)
+│   ├── variables.tf                    # Input variables
+│   ├── outputs.tf                      # Output values
+│   ├── s3.tf                           # S3 bucket for PDFs
+│   ├── cloudwatch_alarms.tf            # Monitoring alarms
+│   ├── budget.tf                       # AWS budget alerts
+│   ├── versions.tf                     # Terraform version constraints
+│   ├── terraform.tfvars                # Your configuration (gitignored)
+│   ├── terraform.tfvars.example        # Example configuration
+│   └── archives/                       # Built lambda ZIPs (gitignored)
+├── lambdas/                            # Lambda functions (all TypeScript)
+│   ├── package.json                    # Shared dependencies
+│   ├── tsconfig.json                   # TypeScript config
+│   ├── esbuild-lambda-layer-plugin.mjs # Build plugin for layer imports
 │   ├── plate_validator/
-│   │   ├── index.ts
-│   │   ├── layer.d.ts              # Type declarations for layer
-│   │   └── dist/                   # Built output (gitignored)
+│   │   ├── index.ts                    # Handler
+│   │   └── layer.d.ts                  # Layer type declarations
 │   ├── retrieve_plate/
+│   ├── plate_preview/
+│   ├── payment_status/
+│   ├── payment_status_check/
+│   ├── payment_status_create/
 │   ├── woovi_pix_invoice/
+│   ├── woovi_pix_invoice_website/
 │   └── woovi_pix_paid_webhook/
 │       ├── index.ts
-│       └── services/               # Service layer (SOLID principles)
+│       ├── index_old.ts                # Legacy handler
+│       └── services/                   # Service layer (SOLID)
 │           ├── botconversa.ts
 │           ├── pdf.ts
 │           └── s3.ts
-├── layers/                         # Lambda layers
+├── layers/                             # Lambda layers
 │   └── shared/
-│       ├── nodejs/                 # Layer source code
-│       │   ├── types/              # Shared TypeScript types
-│       │   │   └── car-plate.ts
-│       │   ├── utils/              # Shared utilities
-│       │   │   ├── mongodb.ts
-│       │   │   ├── response.ts
-│       │   │   └── validators.ts
-│       │   ├── package.json
-│       │   ├── tsconfig.json
-│       │   └── dist/               # Built layer (gitignored)
-│       └── dist/                   # Packaged layer for Terraform (gitignored)
+│       └── nodejs/
+│           ├── types/                  # Shared types
+│           │   └── car-plate.ts
+│           ├── models/                 # MongoDB models
+│           │   └── payment-status.ts
+│           ├── utils/                  # Shared utilities
+│           │   ├── env.ts
+│           │   ├── mongodb.ts
+│           │   ├── response.ts
+│           │   ├── s3.ts
+│           │   └── validators.ts
+│           ├── package.json
+│           └── tsconfig.json
+├── .github/
+│   └── workflows/
+│       └── deploy.yml                  # CI/CD pipeline
+├── Makefile                            # Development commands
 └── README.md
-```Language**: TypeScript
+```
+
+## 🛠️ Tech Stack
+
+- **Language**: TypeScript
 - **Runtime**: Node.js 22.x
 - **Infrastructure as Code**: Terraform >= 1.0
 - **Build Tool**: esbuild
@@ -387,11 +410,11 @@ This project follows software engineering best practices:
 ```typescript
 // ✅ Good: Separated concerns (SOLID)
 class PDFService {
-  async generateVehiclePDF(data: CarPlateData): Promise<Buffer> { }
+  async generateVehiclePDF(data: CarPlateData): Promise<Buffer> {}
 }
 
 class S3Service {
-  async uploadPDF(buffer: Buffer, key: string): Promise<string> { }
+  async uploadPDF(buffer: Buffer, key: string): Promise<string> {}
 }
 
 // Handler delegates to services
@@ -403,10 +426,11 @@ export const handler = async (event) => {
 
 ## 👨‍💻 Author
 
-**Carlos Daniel**
+**Carlos Santos**
+
 - GitHub: [@carlosdaniels3](https://github.com/carlosdaniels3)
-- LinkedIn: [Your LinkedIn](https://linkedin.com/in/yourprofile)
-- Portfolio: [Your Website](https://yourwebsite.com)
+- LinkedIn: [Carlos Santos Engineer](https://www.linkedin.com/in/carlos-santos-engineer/)
+- Website: [DespachAzap](https://despachazap.com/)
 
 ## 📄 License
 
@@ -437,6 +461,7 @@ Contributions are welcome! Please follow these guidelines:
 ## 📞 Support
 
 For issues or questions:
+
 - 🐛 **Bugs**: Open an issue with the `bug` label
 - 💡 **Features**: Open an issue with the `enhancement` label
 - 📖 **Documentation**: Open an issue with the `documentation` label
